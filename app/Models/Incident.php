@@ -8,16 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Incident extends Model
 {
     
-    protected $fillable = [
-        'user_id',
-        'title',
-        'category',
-        'location',
-        'description',
-        'priority',
-        'photo_path',
-        'status'
-    ];
+   protected $fillable = [
+    'title', 
+    'category',
+    'location',
+    'description',
+    'priority',
+    'photo_path'
+];
 
     // Relation : Un incident appartient à un utilisateur (le locataire)
     public function user(): BelongsTo
