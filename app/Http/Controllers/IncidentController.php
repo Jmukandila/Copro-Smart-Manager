@@ -28,7 +28,9 @@ class IncidentController extends Controller
             'description' => 'required|string|min:10',
             'priority'    => 'required|in:basse,moyenne,haute',
             'photo'       => 'nullable|image|max:2048', 
-        ]);
+            'other_details' => 'nullable|string|max:100',
+]);
+      
 
         // 2. Sécurité anti-doublon améliorée
         $alreadyExists = Incident::where('user_id', $request->user()->id)
@@ -57,5 +59,12 @@ class IncidentController extends Controller
         $request->user()->incidents()->create($validated);
 
         return redirect()->route('dashboard')->with('success', 'Votre signalement a été transmis avec succès !');
+
+    }
+
+    public function index()
+    {
+        $incidents = auth()->user()->incidents()->latest()->get();
+        return view('dashboard', compact('incidents'));
     }
 }
