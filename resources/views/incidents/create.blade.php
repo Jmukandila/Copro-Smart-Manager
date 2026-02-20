@@ -184,7 +184,13 @@
                 const result = await response.json();
                 document.getElementById(loadingId).remove();
 
-                let aiResponse = JSON.parse(result.reply);
+                let aiResponse;
+                try {
+                    aiResponse = JSON.parse(result.reply);
+                } catch (e) {
+                    aiResponse = { reply: result.reply || 'Désolé, réponse invalide.', data: null };
+                }
+
                 let extra = (aiResponse.data && aiResponse.data.title) ? `<div class="mt-3 pt-3 border-t border-slate-700 text-[11px] text-indigo-400 font-bold animate__animated animate__pulse animate__infinite">👉 N'oubliez pas de cliquer sur "Transmettre" ci-contre !</div>` : "";
 
                 chatContent.insertAdjacentHTML('beforeend', `<div class="flex flex-col items-start mb-4 animate__animated animate__fadeInLeft"><div class="bg-slate-800 text-slate-200 p-4 rounded-2xl rounded-tl-none border border-slate-700 text-sm shadow-sm">${aiResponse.reply}${extra}</div></div>`);

@@ -13,12 +13,14 @@ class AdminMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-   public function handle(Request $request, Closure $next)
+ public function handle(Request $request, Closure $next)
 {
+    
     if (auth()->check() && auth()->user()->is_admin) {
         return $next($request);
     }
 
+    
     return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
 }
 }
