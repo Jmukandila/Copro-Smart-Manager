@@ -4,24 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Incident;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf; // Pour l'étape suivante (PDF)
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class IncidentController extends Controller
 {
-    /**
-     * Liste des incidents (Admin : tout + recherche | User : les siens)
-     */
     public function index(Request $request)
     {
         $user = auth()->user();
+        $query = $user->is_admin ? Incident::with('user') : $user->incidents();
 
-        // 1. Initialisation de la requête
-        // Si admin, on prend tout avec les infos de l'utilisateur. Sinon, juste les siens.
-        $query = $user->is_admin 
-            ? Incident::with('user') 
-            : $user->incidents();
-
-        // 2. Logique de recherche (Uniquement pour l'admin ou pour filtrer ses propres dossiers)
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
@@ -34,40 +26,42 @@ class IncidentController extends Controller
             });
         }
 
-        // 3. Pagination et vue
-        $incidents = $query->latest()->paginate(10);
+        $incidents = $query->latest()->paginate(10)->appends($request->query());
         
-        // On retourne la vue admin si c'est un admin, sinon le dashboard classique
-        $view = $user->is_admin ? 'incidents.index' : 'dashboard';
-        
-        return view($view, compact('incidents'));
+        $data = ['incidents' => $incidents];
+
+        if ($user->is_admin) {
+            $data['stats'] = [
+                'total'      => Incident::count(),
+                'en_attente' => Incident::where('status', 'en_attente')->count(),
+                'en_cours'   => Incident::where('status', 'en_cours')->count(),
+                'resolu'     => Incident::where('status', 'resolu')->count(),
+            ];
+            return view('admin.incidents.index', $data);
+        }
+
+        return view('dashboard', $data);
     }
 
-    /**
-     * Affiche le formulaire de signalement.
-     */
     public function create() 
     {
         return view('incidents.create');
     }
 
-    /**
-     * Enregistre le signalement dans la base de données.
-     */
     public function store(Request $request) 
     {
-        // 1. Validation
-        $validated = $request->validate([
+        $request->validate([
             'title'         => 'required|string|max:100',
             'category'      => 'required|string',
             'location'      => 'required|string|max:255',
             'description'   => 'required|string|min:10',
             'priority'      => 'required|in:basse,moyenne,haute',
-            'photo'         => 'nullable|image|max:2048', 
+            'photo_path'    => 'nullable|array|max:5',
+            'photo_path.*'  => 'image|max:2048',
             'other_details' => 'nullable|string|max:100',
         ]);
 
-        // 2. Anti-doublon (24h)
+        // Anti-doublon 24h
         $alreadyExists = Incident::where('user_id', auth()->id())
             ->where('category', $request->category)
             ->where('title', $request->title)
@@ -75,38 +69,51 @@ class IncidentController extends Controller
             ->exists();
 
         if ($alreadyExists) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', '⚠️ Signalement déjà enregistré il y a moins de 24h.');
+            return redirect()->back()->withInput()->with('error', '⚠️ Signalement déjà enregistré il y a moins de 24h.');
         }
 
-        // 3. Gestion de l'image
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('incidents', 'public');
-            $validated['photo_path'] = $path;
+        $paths = [];
+        if ($request->hasFile('photo_path')) {
+            foreach ($request->file('photo_path') as $image) {
+                // Stockage physique dans storage/app/public/incidents
+                $paths[] = $image->store('incidents', 'public');
+            }
         }
 
-        unset($validated['photo']);
-        
-        // 4. Création
-        auth()->user()->incidents()->create($validated);
+        auth()->user()->incidents()->create([
+            'title' => $request->title,
+            'category' => $request->category,
+            'location' => $request->location,
+            'description' => $request->description,
+            'priority' => $request->priority,
+            'other_details' => $request->other_details,
+            'photo_path' => $paths, // Sera casté en JSON
+            'status' => 'en_attente',
+        ]);
 
-        return redirect()->route('incidents.index')->with('success', 'Signalement transmis avec succès !');
+        return redirect()->route('dashboard')->with('success', 'Signalement envoyé avec succès !');
     }
 
-    /**
-     * Génération du rapport PDF (Etape suivante)
-     */
-    public function downloadReport($id)
+    public function update(Request $request, Incident $incident)
     {
-        $incident = Incident::with('user')->findOrFail($id);
-        
-        // Vérification de sécurité (seul l'admin ou le propriétaire peut télécharger)
-        if (!auth()->user()->is_admin && $incident->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $request->validate([
+            'status' => 'required|in:en_attente,en_cours,resolu',
+            'internal_notes' => 'nullable|string|max:255'
+        ]);
 
-        $pdf = Pdf::loadView('incidents.report', compact('incident'));
-        return $pdf->download("rapport-incident-{$incident->id}.pdf");
+        $incident->update($request->only(['status', 'internal_notes']));
+
+        return redirect()->back()->with('success', 'Incident mis à jour.');
+    }
+
+    public function destroy(Incident $incident)
+    {
+        if($incident->photo_path) {
+            foreach($incident->photo_path as $path) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+        $incident->delete();
+        return redirect()->back()->with('success', 'Incident supprimé.');
     }
 }

@@ -57,4 +57,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // Autres
 Route::get('/waiting', fn() => view('waiting-room'))->name('waiting');
 
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+   
+Route::delete('/incidents/{incident}', [AdminIncidentController::class, 'destroy'])->name('incidents.destroy');
+});
+
 require __DIR__.'/auth.php';

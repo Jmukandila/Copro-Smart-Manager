@@ -6,21 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Incident;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class IncidentController extends Controller 
 {
-    /**
-     * Affiche la console admin avec recherche et statistiques.
-     */
     public function index(Request $request)
     {
-        // 1. Initialisation de la requête avec la relation utilisateur
         $query = Incident::with('user');
 
-        // 2. Logique de recherche (Nom, Appart, Titre, Description)
         if ($request->filled('search')) {
             $search = $request->input('search');
-
             $query->where(function($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%")
@@ -31,11 +26,8 @@ class IncidentController extends Controller
             });
         }
 
-        // 3. Récupération des données (Pagination pour éviter les lenteurs)
-        // appends() permet de garder le mot-clé de recherche quand on change de page
         $incidents = $query->latest()->paginate(10)->appends($request->query());
 
-        // 4. Calcul des statistiques (Basé sur la table complète pour les compteurs fixes)
         $stats = [
             'total'      => Incident::count(),
             'en_attente' => Incident::where('status', 'en_attente')->count(),
@@ -43,52 +35,53 @@ class IncidentController extends Controller
             'resolu'     => Incident::where('status', 'resolu')->count(),
         ];
 
-        return view('admin.incidents.index', compact('incidents', 'stats'));
+        // Correction de l'erreur compact('')
+        $view = auth()->user()->is_admin ? 'admin.incidents.index' : 'dashboard';
+        return view($view, compact('incidents', 'stats'));
     }
 
-    /**
-     * Mise à jour du statut et des notes par l'admin.
-     */
+    // Rapport INDIVIDUEL (Appelé par ta route admin.incidents.report)
+    public function downloadReport($id) 
+    {
+        $incident = Incident::with('user')->findOrFail($id);
+        
+        // On transforme l'unique incident en collection pour ton pdf.blade.php
+        $incidents = collect([$incident]);
+
+        $pdf = Pdf::loadView('admin.incidents.pdf', compact('incidents'))
+                  ->setPaper('a4', 'portrait');
+        
+        return $pdf->download("rapport-incident-{$id}.pdf");
+    }
+
+    // Export GLOBAL (Tous les incidents)
+    public function exportPdf()
+    {
+        $incidents = Incident::with('user')->latest()->get();
+        $pdf = Pdf::loadView('admin.incidents.pdf', compact('incidents'));
+        return $pdf->download('rapport-global-' . now()->format('d-m-Y') . '.pdf');
+    }
+
+    public function destroy(Incident $incident)
+    {
+        if ($incident->photo_path && is_array($incident->photo_path)) {
+            foreach ($incident->photo_path as $path) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        $incident->delete();
+        return redirect()->back()->with('success', 'L\'incident a été supprimé définitivement.');
+    }
+
     public function update(Request $request, Incident $incident)
     {
         $request->validate([
             'status'         => 'required|in:en_attente,en_cours,resolu',
-            'admin_comment'  => 'nullable|string|max:1000',
             'internal_notes' => 'nullable|string|max:1000',
         ]);
 
-        $incident->update([
-            'status'         => $request->status,
-            'admin_comment'  => $request->admin_comment,
-            'internal_notes' => $request->internal_notes,
-        ]);
-
-        return back()->with('success', 'L\'incident a été mis à jour avec succès !');
-    }
-
-    /**
-     * Exporte TOUS les incidents en un seul PDF.
-     */
-    public function exportPdf()
-    {
-        $incidents = Incident::with('user')->latest()->get();
-        
-        // Assure-toi que le fichier resources/views/admin/incidents/pdf.blade.php existe
-        $pdf = Pdf::loadView('admin.incidents.pdf', compact('incidents'));
-        
-        return $pdf->download('rapport-global-' . now()->format('d-m-Y') . '.pdf');
-    }
-
-    /**
-     * Téléchargement PDF d'un rapport pour un incident unique.
-     */
-    public function downloadReport($id)
-    {
-        $incident = Incident::with('user')->findOrFail($id);
-
-        // Assure-toi que le fichier resources/views/admin/incidents/report.blade.php existe
-        $pdf = Pdf::loadView('admin.incidents.report', compact('incident'));
-        
-        return $pdf->download("rapport-incident-{$incident->id}.pdf");
+        $incident->update($request->only(['status', 'internal_notes']));
+        return back()->with('success', 'L\'incident a été mis à jour.');
     }
 }

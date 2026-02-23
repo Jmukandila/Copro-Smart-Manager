@@ -19,6 +19,10 @@ class Incident extends Model
         'internal_notes',
         'apartment_number',
     ];
+  protected $casts = [
+    'photo_path' => 'array', 
+
+];
 
     // Relation : Un incident appartient à un utilisateur (le locataire)
     public function user(): BelongsTo

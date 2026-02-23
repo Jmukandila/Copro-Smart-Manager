@@ -5,6 +5,15 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        
+        /* Style pour l'aperçu des images */
+        .preview-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
     </style>
 
     <div class="py-6 md:py-12 bg-[#F8FAFC] min-h-screen font-sans">
@@ -26,6 +35,7 @@
                     </div>
 
                     <div class="p-8 md:p-10">
+                        {{-- Notifications --}}
                         @if (session('error'))
                             <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-2xl animate__animated animate__headShake shadow-sm">
                                 <div class="flex items-center">
@@ -94,9 +104,15 @@
                                 <textarea name="description" rows="3" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl shadow-inner resize-none" placeholder="Décrivez le problème...">{{ old('description') }}</textarea>
                             </div>
 
+                            {{-- SECTION PHOTOS MODIFIÉE --}}
                             <div class="group">
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">Photo</label>
-                                <input type="file" name="photo" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Photos (max 5)</label>
+                                <input type="file" name="photo_path[]" id="photo_input" multiple accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
+                                
+                                {{-- Conteneur pour l'aperçu --}}
+                                <div id="preview_container" class="flex flex-wrap gap-3 mt-4"></div>
+                                
+                                <p class="text-xs text-slate-400 mt-2">Maintenez "Ctrl" pour sélectionner plusieurs images. (Format : jpg, png)</p>
                             </div>
 
                             <button type="submit" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-5 rounded-2xl shadow-xl transition-all uppercase tracking-widest text-sm">
@@ -109,6 +125,7 @@
         </div>
     </div>
 
+    {{-- Chatbot AI --}}
     <div class="fixed bottom-6 right-6 z-50 group">
         <div class="absolute bottom-full right-0 mb-4 bg-slate-900 text-white text-xs py-2 px-4 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
             Besoin d'aide ? ✨
@@ -152,6 +169,27 @@
         const toggleBtn = document.getElementById('toggle-chat');
         const closeBtn = document.getElementById('close-chat');
 
+        // GESTION APERÇU PHOTOS
+        const photoInput = document.getElementById('photo_input');
+        const previewContainer = document.getElementById('preview_container');
+
+        photoInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+            const files = Array.from(this.files);
+            
+            files.slice(0, 5).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'preview-image animate__animated animate__zoomIn';
+                    previewContainer.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // GESTION CHAT ET UI
         toggleBtn.addEventListener('click', () => {
             chatWindow.classList.toggle('hidden');
             if (!chatWindow.classList.contains('hidden')) chatWindow.classList.add('animate__fadeInUp');

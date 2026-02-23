@@ -1,0 +1,29 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+ public function up()
+{
+    Schema::table('incidents', function (Blueprint $table) {
+        // On passe de string à text pour accepter le format JSON des multiples photos
+        $table->text('photo_path')->nullable()->change();
+    });
+}
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('text_on_incidents', function (Blueprint $table) {
+            //
+        });
+    }
+};
