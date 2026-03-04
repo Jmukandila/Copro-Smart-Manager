@@ -6,29 +6,30 @@ use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
+use App\Models\Incident;
 
-// 1. Accueil
 Route::get('/', function () {
     return view('welcome');
 });
 
-// 2. Espace Utilisateur (Locataires)
+
 Route::middleware(['auth', 'verified'])->group(function () {
     
-    // Redirection intelligente vers le dashboard
-    Route::get('/dashboard', [IncidentController::class, 'index'])->name('dashboard');
+    
+    Route::get('/dashboard', function () {
+        if (auth()->user()->isAdmin()) {
+            $incidents = Incident::latest()->get();
+        } else {
+            $incidents = auth()->user()->incidents()->latest()->get();
+        }
+        return view('dashboard', ['incidents' => $incidents]);
+    })->name('dashboard');
 
-    // Signalement d'incidents
     Route::get('/incidents/create', [IncidentController::class, 'create'])->name('incidents.create');
     Route::post('/incidents', [IncidentController::class, 'store'])->name('incidents.store');
-    
-    // Téléchargement PDF pour l'utilisateur (son propre rapport)
     Route::get('/incidents/{id}/report', [IncidentController::class, 'downloadReport'])->name('incidents.report');
-
-    // IA Chat
     Route::post('/ai/chat', [ChatController::class, 'ask'])->name('ai.chat');
 
-    // Profil
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile', 'edit')->name('profile.edit');
         Route::patch('/profile', 'update')->name('profile.update');
@@ -36,30 +37,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-// 3. Espace Administration (Syndic)
-// Note : Le middleware 'admin' doit être défini dans ton Kernel ou via une Gate
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     
-    // Gestion des incidents par l'admin
+   
     Route::get('/incidents', [AdminIncidentController::class, 'index'])->name('incidents.index');
     Route::patch('/incidents/{incident}', [AdminIncidentController::class, 'update'])->name('incidents.update');
-    
-    // Export PDF global ou spécifique
+    Route::delete('/incidents/{incident}', [AdminIncidentController::class, 'destroy'])->name('incidents.destroy');
     Route::get('/incidents/export', [AdminIncidentController::class, 'exportPdf'])->name('incidents.export');
-    // Téléchargement PDF d'un incident spécifique (admin)
     Route::get('/incidents/{incident}/report', [AdminIncidentController::class, 'downloadReport'])->name('incidents.report');
 
-    // Gestion des Utilisateurs
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::patch('/users/{user}/toggle-admin', [AdminUserController::class, 'toggleAdmin'])->name('users.toggle');
-});
-
-// Autres
-Route::get('/waiting', fn() => view('waiting-room'))->name('waiting');
-
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
    
-Route::delete('/incidents/{incident}', [AdminIncidentController::class, 'destroy'])->name('incidents.destroy');
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.updateRole');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 });
+
+Route::get('/waiting', fn() => view('waiting-room'))->name('waiting');
 
 require __DIR__.'/auth.php';

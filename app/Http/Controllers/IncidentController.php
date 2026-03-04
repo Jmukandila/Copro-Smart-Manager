@@ -12,7 +12,7 @@ class IncidentController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $query = $user->is_admin ? Incident::with('user') : $user->incidents();
+        $query = $user->isAdmin() ? Incident::with('user') : $user->incidents();
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -30,7 +30,7 @@ class IncidentController extends Controller
         
         $data = ['incidents' => $incidents];
 
-        if ($user->is_admin) {
+        if ($user->isAdmin()) {
             $data['stats'] = [
                 'total'      => Incident::count(),
                 'en_attente' => Incident::where('status', 'en_attente')->count(),

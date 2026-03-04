@@ -20,6 +20,7 @@ class User extends Authenticatable
         'is_verified',       
         'apartment_number',
         'is_admin', 
+        'role',
     ];
 
     protected $hidden = [
@@ -40,5 +41,10 @@ class User extends Authenticatable
     public function incidents()
     {
         return $this->hasMany(Incident::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin' || (bool) $this->is_admin;
     }
 }

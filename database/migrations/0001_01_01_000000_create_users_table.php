@@ -11,7 +11,7 @@ return new class extends Migration
      */
 public function up(): void
 {
-    // Table des utilisateurs
+    
     Schema::create('users', function (Blueprint $table) {
         $table->id();
         $table->string('name');
@@ -20,21 +20,20 @@ public function up(): void
         $table->string('password');
         $table->rememberToken();
         $table->timestamps();
-
-        // Tes champs personnalisés pour la copropriété
-        $table->string('occupant_status')->default('locataire'); // locataire, proprietaire, admin
-        $table->boolean('is_verified')->default(false);        // Sécurité : validation manuelle par le syndic
-        $table->string('apartment_number')->nullable();        // Optionnel mais utile
+        $table->string('occupant_status')->default('locataire'); 
+        $table->boolean('is_verified')->default(false);        
+        $table->string('apartment_number')->nullable();      
+        $table->string('role')->default('user');
     });
 
-    // Table pour la réinitialisation des mots de passe
+    
     Schema::create('password_reset_tokens', function (Blueprint $table) {
         $table->string('email')->primary();
         $table->string('token');
         $table->timestamp('created_at')->nullable();
     });
 
-    // Table pour la gestion des sessions (indispensable pour l'authentification)
+    
     Schema::create('sessions', function (Blueprint $table) {
         $table->string('id')->primary();
         $table->foreignId('user_id')->nullable()->index();
