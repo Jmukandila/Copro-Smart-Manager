@@ -36,7 +36,7 @@ class IncidentController extends Controller
         ];
 
         // Correction de l'erreur compact('')
-        $view = auth()->user()->is_admin ? 'admin.incidents.index' : 'dashboard';
+        $view = auth()->user()->isAdmin() ? 'admin.incidents.index' : 'dashboard';
         return view($view, compact('incidents', 'stats'));
     }
 

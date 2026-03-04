@@ -28,12 +28,20 @@ class AuthenticatedSessionController extends Controller
 
     $request->session()->regenerate();
 
-    // ICI : On vérifie le statut avant de rediriger
-    if ($request->user()->is_admin) {
-        return redirect()->intended('/admin/incidents'); // Route pour le Syndic
+    if ($request->user()->isAdmin()) {
+        return redirect()->intended('/admin/incidents'); 
     }
 
-    return redirect()->intended('/dashboard'); // Route pour les locataires/proprios
+    return redirect()->intended('/dashboard'); 
+}
+
+protected function redirectPath()
+{
+    if (auth()->user()->isAdmin()) {
+        return route('admin.incidents.index');
+    }
+
+    return '/dashboard';
 }
 
     /**

@@ -95,7 +95,7 @@
                                     "{{ $incident->description }}"
                                 </p>
 
-                                {{-- Commentaire du Syndic (Zone de réponse) --}}
+                                {
                                 @if($incident->admin_comment)
                                     <div class="mt-auto mb-4 p-3 bg-indigo-50 border-l-4 border-indigo-400 rounded-r-xl">
                                         <p class="text-[11px] font-bold text-indigo-700 uppercase mb-1">Réponse du syndic :</p>
