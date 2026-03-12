@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
 {
     Schema::table('users', function (Blueprint $table) {
-        // On ajoute la colonne après l'email, par exemple
+       
         $table->boolean('is_admin')->default(false)->after('email');
     });
 }

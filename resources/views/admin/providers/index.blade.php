@@ -19,7 +19,10 @@
                             <p class="text-xs text-slate-400">Urgence 24h/24</p>
                         </div>
                     </div>
-                    <div class="text-sm text-slate-600 mb-4">📞 081 000 000</div>
+                    <div class="text-sm text-slate-600 mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 5a2 2 0 012-2h3.28a2 2 0 011.94 1.52l.72 2.89a2 2 0 01-.57 1.94l-1.32 1.32a16 16 0 006.36 6.36l1.32-1.32a2 2 0 011.94-.57l2.89.72A2 2 0 0121 17.72V21a2 2 0 01-2 2h-1C9.82 23 2 15.18 2 5z"/></svg>
+                        081 000 000
+                    </div>
                     <button class="w-full py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition">Voir les interventions</button>
                 </div>
             </div>

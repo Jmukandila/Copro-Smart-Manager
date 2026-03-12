@@ -13,7 +13,7 @@
         
         .description-box { background: #f8fafc; padding: 15px; border-left: 4px solid #e2e8f0; margin: 15px 0; font-style: italic; }
         
-        /* Grille d'images pour le PDF */
+
         .photo-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .photo-cell { width: 33.33%; padding: 5px; text-align: center; }
         .photo-container { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background-color: #f8fafc; }
@@ -58,7 +58,6 @@
                 "{{ $incident->description }}"
             </div>
 
-            {{-- Galerie d'images alignée --}}
             @if($incident->photo_path && count($incident->photo_path) > 0)
                 <span class="label">Pièces Jointes ({{ count($incident->photo_path) }})</span>
                 <table class="photo-table">
@@ -74,7 +73,6 @@
                             </td>
                         @endforeach
                         
-                        {{-- Cellules vides pour maintenir l'alignement --}}
                         @for ($i = count($incident->photo_path) % 3; $i < 3 && $i != 0; $i++)
                             <td class="photo-cell"></td>
                         @endfor

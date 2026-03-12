@@ -46,6 +46,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/incidents/{incident}', [AdminIncidentController::class, 'destroy'])->name('incidents.destroy');
     Route::get('/incidents/export', [AdminIncidentController::class, 'exportPdf'])->name('incidents.export');
     Route::get('/incidents/{incident}/report', [AdminIncidentController::class, 'downloadReport'])->name('incidents.report');
+    Route::post('/incidents/{incident}/ai-reply', [AdminIncidentController::class, 'aiReply'])->name('incidents.aiReply');
+    Route::post('/incidents/digest', [AdminIncidentController::class, 'aiDigest'])->name('incidents.digest');
 
    
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');

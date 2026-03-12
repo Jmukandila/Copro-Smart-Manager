@@ -1,3 +1,4 @@
+@section('title', 'Reinitialiser mot de passe')
 <x-guest-layout>
     <form method="POST" action="{{ route('password.store') }}">
         @csrf

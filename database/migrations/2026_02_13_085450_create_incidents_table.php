@@ -13,7 +13,7 @@ return new class extends Migration
 {
     Schema::create('incidents', function (Blueprint $table) {
         $table->id();
-        $table->string('title'); // <-- CETTE LIGNE EST ESSENTIELLE
+        $table->string('title');
         $table->string('category');
         $table->string('location');
         $table->text('description');

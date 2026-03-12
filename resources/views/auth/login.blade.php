@@ -1,3 +1,4 @@
+@section('title', 'Connexion')
 <x-guest-layout>
     <div class="mb-8 text-center">
         <h1 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Bon retour !</h1>

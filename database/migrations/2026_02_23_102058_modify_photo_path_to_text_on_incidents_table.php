@@ -12,7 +12,6 @@ return new class extends Migration
  public function up()
 {
     Schema::table('incidents', function (Blueprint $table) {
-        // On passe de string à text pour accepter le format JSON des multiples photos
         $table->text('photo_path')->nullable()->change();
     });
 }

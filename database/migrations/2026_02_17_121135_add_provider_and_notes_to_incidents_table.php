@@ -27,7 +27,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('incidents', function (Blueprint $table) {
-            // On retire d'abord la clé étrangère, puis les colonnes
             $table->dropForeign(['provider_id']);
             $table->dropColumn(['provider_id', 'internal_notes']);
         });

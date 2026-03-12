@@ -1,59 +1,135 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Syndic Connect
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Plateforme de gestion d'incidents pour coproprietes. Les residents peuvent signaler des problemes, suivre l'etat de resolution et echanger avec le syndic. L'administration dispose d'une console pour classer, traiter et repondre rapidement aux incidents, avec assistance IA.
 
-## About Laravel
+## Table des matieres
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Apercu
+- Fonctionnalites
+- Stack technique
+- Architecture (survol)
+- Installation locale
+- Configuration
+- Lancement
+- Usage (guide rapide)
+- IA (reponse + digest)
+- Export PDF
+- Structure des routes
+- Tests
+- Deploiement (notes)
+- Credits
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Apercu
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Syndic Connect centralise les signalements d'incidents (photos, localisation, priorite) et fournit un back-office admin pour tri, suivi et reponses. L'IA propose des reponses et un digest hebdomadaire pour gagner du temps.
 
-## Learning Laravel
+## Fonctionnalites
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- Signalement d'incidents avec photos
+- Suivi des statuts (en attente, en cours, resolu)
+- Console admin pour tri, mise a jour et suppression
+- Reponses suggerees par IA pour le locataire
+- Digest hebdomadaire genere par IA
+- Export PDF des incidents
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Stack technique
 
-## Laravel Sponsors
+- Laravel (backend)
+- Blade + Tailwind CSS (UI)
+- Vite (assets)
+- DomPDF (export PDF)
+- Groq API (IA)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Architecture (survol)
 
-### Premium Partners
+- Controllers: `app/Http/Controllers`
+- Vues: `resources/views`
+- Routes: `routes/web.php`
+- Models: `app/Models`
+- Stockage des images: `storage/app/public` (via `php artisan storage:link`)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Installation locale
 
-## Contributing
+1. Installer les dependances :
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer install
+npm install
+```
 
-## Code of Conduct
+2. Configurer l'environnement :
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+3. Configurer la base de donnees dans `.env`, puis migrer :
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan migrate
+```
 
-## License
+4. Lier le stockage public :
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan storage:link
+```
+
+## Configuration
+
+Variables d'environnement principales :
+
+- `DB_*` : configuration base de donnees
+- `GROQ_API_KEY` : cle API pour les fonctionnalites IA
+- `APP_URL` : URL de l'application
+
+## Lancement
+
+```bash
+npm run dev
+php artisan serve
+```
+
+## Usage (guide rapide)
+
+1. Creer un compte (resident).
+2. Signaler un incident (titre, description, photo, localisation).
+3. Suivre l'etat depuis le dashboard.
+4. Connecter un compte admin pour acceder a la console `/admin`.
+
+## IA (reponse + digest)
+
+- Reponse IA: dans la console admin, bouton "Proposer Reponse IA".
+- Digest IA: bouton "Generer le resumé " sur la liste des incidents admin.
+
+## Export PDF
+
+- Export global: depuis la console admin (bouton export).
+- Rapport individuel: bouton rapport sur chaque incident.
+
+## Structure des routes
+
+Principales routes (voir `routes/web.php`) :
+
+- `/dashboard` : dashboard utilisateur
+- `/incidents/create` : creation incident
+- `/admin/incidents` : console admin incidents
+- `/admin/users` : gestion utilisateurs
+- `/ai/chat` : chat IA (utilisateur)
+
+## Tests
+
+```bash
+php artisan test
+```
+
+## Deploiement (notes)
+
+- Configurer `APP_URL`, base de donnees, stockage public
+- Executer migrations
+- Configurer un scheduler si besoin (digest hebdo automatise)
+
+## Credits
+
+Developpé par Josh Kaninda - Mars 2026

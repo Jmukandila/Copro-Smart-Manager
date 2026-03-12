@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-// Assure-toi que le modèle s'appelle bien Incident ou Report selon ton fichier
 use App\Models\Incident; 
 
 class User extends Authenticatable

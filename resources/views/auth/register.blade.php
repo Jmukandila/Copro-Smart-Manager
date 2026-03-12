@@ -1,3 +1,4 @@
+@section('title', 'Inscription')
 <x-guest-layout>
     <div class="mb-8 text-center">
         <h1 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Rejoindre la résidence</h1>

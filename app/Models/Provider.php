@@ -10,11 +10,11 @@ class Provider extends Model
 {
     Schema::create('providers', function (Blueprint $table) {
         $table->id();
-        $table->string('name'); // Nom de l'entreprise (ex: SOS Plomberie)
-        $table->string('specialty'); // Plomberie, Électricité, Ascenseur
+        $table->string('name'); 
+        $table->string('specialty'); 
         $table->string('phone');
         $table->string('email');
-        $table->boolean('is_emergency')->default(false); // Est-ce qu'ils interviennent 24h/24 ?
+        $table->boolean('is_emergency')->default(false);
         $table->timestamps();
     });
 }

@@ -13,21 +13,20 @@ return new class extends Migration
 {
     Schema::create('reports', function (Blueprint $table) {
         $table->id();
-        // Relie le signalement à l'utilisateur (le locataire)
+        
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
         
-        $table->string('title'); // Ex: "Fuite d'eau"
-        $table->text('description'); // Détails du problème
-        $table->string('apartment_number')->nullable(); // Rappel de l'appart concerné
+        $table->string('title'); 
+        $table->text('description'); 
+        $table->string('apartment_number')->nullable(); 
         
-        // Système de suivi par statut
+        
         $table->string('status')->default('en_attente'); 
-        // Valeurs possibles : en_attente, en_cours, resolu, rejete
         
-        $table->text('admin_comment')->nullable(); // Réponse du syndic
-        $table->string('priority')->default('normale'); // basse, normale, urgente
+        $table->text('admin_comment')->nullable(); 
+        $table->string('priority')->default('normale'); 
         
-        $table->timestamps(); // created_at (date du signalement) et updated_at
+        $table->timestamps(); 
     });
 }
 };

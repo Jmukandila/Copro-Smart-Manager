@@ -1,3 +1,4 @@
+@section('title', 'Tableau de bord')
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -29,7 +30,9 @@
 
             @if($incidents->isEmpty())
                 <div class="bg-white p-16 rounded-[2rem] text-center shadow-sm border border-slate-100">
-                    <div class="text-6xl mb-4">🏢</div>
+                    <div class="mb-4 flex justify-center">
+                        <svg class="w-16 h-16 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M4 21V5a2 2 0 012-2h5v18M15 21V9a2 2 0 012-2h3v14M8 9h2m-2 4h2m-2 4h2"/></svg>
+                    </div>
                     <p class="text-slate-500 font-medium text-lg">Aucun incident signalé pour le moment.</p>
                     <p class="text-slate-400 text-sm">Tout semble être en ordre dans votre résidence.</p>
                 </div>

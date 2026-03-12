@@ -1,3 +1,4 @@
+@section('title', 'Nouveau signalement')
 <x-app-layout>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
@@ -39,7 +40,7 @@
                         @if (session('error'))
                             <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-2xl animate__animated animate__headShake shadow-sm">
                                 <div class="flex items-center">
-                                    <span class="mr-3 text-xl">⚠️</span>
+                                    <svg class="w-5 h-5 mr-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.74-3L13.74 4a2 2 0 00-3.48 0L3.33 16a2 2 0 001.74 3z"/></svg>
                                     <p class="font-medium">{{ session('error') }}</p>
                                 </div>
                             </div>
@@ -48,7 +49,7 @@
                         @if (session('success'))
                             <div class="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 rounded-2xl animate__animated animate__fadeIn shadow-sm">
                                 <div class="flex items-center">
-                                    <span class="mr-3 text-xl">✅</span>
+                                    <svg class="w-5 h-5 mr-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     <p class="font-medium">{{ session('success') }}</p>
                                 </div>
                             </div>
@@ -61,12 +62,12 @@
                                     <label class="block text-sm font-semibold text-slate-700 mb-2">Nature du problème <span class="text-red-500">*</span></label>
                                     <select name="category" required class="w-full px-4 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500/20 transition-all text-slate-700 shadow-inner">
                                         <option value="" disabled selected>Choisir une option...</option>
-                                        <option value="plomberie">🚰 Plomberie & Eau</option>
-                                        <option value="electricite">⚡ Électricité & Lumière</option>
-                                        <option value="ascenseur">🛗 Ascenseur / Parties communes</option>
-                                        <option value="securite">🔐 Sécurité & Accès</option>
-                                        <option value="chauffage">🔥 Chauffage & Clim</option>
-                                        <option value="autres">🔎 Autres (Précisez ci-dessous)</option>
+                                        <option value="plomberie">Plomberie & Eau</option>
+                                        <option value="electricite">Electricite & Lumiere</option>
+                                        <option value="ascenseur">Ascenseur / Parties communes</option>
+                                        <option value="securite">Securite & Acces</option>
+                                        <option value="chauffage">Chauffage & Clim</option>
+                                        <option value="autres">Autres (Precisez ci-dessous)</option>
                                     </select>
                                     <div id="other_category_div" class="hidden animate__animated animate__fadeIn mt-4">
                                         <input type="text" name="other_details" id="other_details" placeholder="Précisez ici..." class="w-full px-6 py-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl shadow-inner outline-none">
@@ -128,32 +129,38 @@
     {{-- Chatbot AI --}}
     <div class="fixed bottom-6 right-6 z-50 group">
         <div class="absolute bottom-full right-0 mb-4 bg-slate-900 text-white text-xs py-2 px-4 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-            Besoin d'aide ? ✨
+            Besoin d'aide ?
         </div>
         
         <button id="toggle-chat" class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-full shadow-2xl flex items-center justify-center text-2xl hover:scale-110 transition-transform border-4 border-white">
-            🤖
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M16 10h.01M9 16h6M12 2v3m6 3a9 9 0 11-12 0 9 9 0 0112 0z"/></svg>
         </button>
 
         <div id="chat-window" class="hidden absolute bottom-20 right-0 w-[350px] md:w-[400px] h-[550px] bg-slate-950 rounded-[2.5rem] shadow-2xl border border-slate-800 overflow-hidden animate__animated">
             <div class="bg-slate-900/50 flex flex-col h-full p-6">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-lg">🤖</div>
+                        <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-lg">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M16 10h.01M9 16h6M12 2v3m6 3a9 9 0 11-12 0 9 9 0 0112 0z"/></svg>
+                        </div>
                         <h3 class="text-white font-bold text-sm">Assistant Copro</h3>
                     </div>
-                    <button id="close-chat" class="text-slate-400 hover:text-white">✕</button>
+                    <button id="close-chat" class="text-slate-400 hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
                 
                 <div id="chat-content" class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2 custom-scrollbar text-sm">
                     <div class="bg-slate-800 text-slate-200 p-4 rounded-2xl rounded-tl-none border border-slate-700">
-                        Bonjour ! Décrivez-moi votre problème technique, je m'occupe de remplir le formulaire. 👋
+                        Bonjour. Decrivez-moi votre probleme technique, je m'occupe de remplir le formulaire.
                     </div>
                 </div>
 
                 <div class="relative">
                     <input type="text" id="chat-input" placeholder="Ecrivez ici..." class="w-full pl-4 pr-12 py-4 bg-slate-800/50 border border-slate-700 rounded-xl text-white text-sm outline-none">
-                    <button id="send-btn" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-lg">🚀</button>
+                    <button id="send-btn" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l14-7-4 7 4 7-14-7z"/></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -229,7 +236,7 @@
                     aiResponse = { reply: result.reply || 'Désolé, réponse invalide.', data: null };
                 }
 
-                let extra = (aiResponse.data && aiResponse.data.title) ? `<div class="mt-3 pt-3 border-t border-slate-700 text-[11px] text-indigo-400 font-bold animate__animated animate__pulse animate__infinite">👉 N'oubliez pas de cliquer sur "Transmettre" ci-contre !</div>` : "";
+                let extra = (aiResponse.data && aiResponse.data.title) ? `<div class="mt-3 pt-3 border-t border-slate-700 text-[11px] text-indigo-400 font-bold animate__animated animate__pulse animate__infinite">N'oubliez pas de cliquer sur "Transmettre" ci-contre.</div>` : "";
 
                 chatContent.insertAdjacentHTML('beforeend', `<div class="flex flex-col items-start mb-4 animate__animated animate__fadeInLeft"><div class="bg-slate-800 text-slate-200 p-4 rounded-2xl rounded-tl-none border border-slate-700 text-sm shadow-sm">${aiResponse.reply}${extra}</div></div>`);
 

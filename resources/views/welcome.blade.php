@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gestion Copropriété</title>
+    <title>Accueil - {{ config('app.name', 'Laravel') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -84,4 +84,16 @@
             </div>
         </main>
     </div>
+    <footer class="mt-12 w-full border-t border-[#e7e7e5] dark:border-[#2b2b2a] bg-gradient-to-b from-white to-[#f8f8f6] dark:from-[#0f0f0f] dark:to-[#121211]">
+        <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex h-9 px-3 items-center justify-center rounded-full bg-[#111110] text-white text-[10px] font-black tracking-wide">JKANINDA</span>
+                <div class="text-[10px] font-black uppercase tracking-[0.35em] text-[#8a8984]">Signature</div>
+            </div>
+            <div class="text-center sm:text-right">
+                <p class="text-sm sm:text-base font-black text-[#8a8984] dark:text-[#b9b8b2]">MADE WITH 💞 BY JOSH KANINDA</p>
+                <p class="text-xs font-semibold text-[#8a8984]">Mars 2026</p>
+            </div>
+        </div>
+    </footer>
 </body>
