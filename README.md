@@ -130,6 +130,28 @@ php artisan test
 - Executer migrations
 - Configurer un scheduler si besoin (digest hebdo automatise)
 
+
+## N.B : Connexion en tant qu'administrateur
+
+Option 1 : Via le Terminal (Le plus rapide - "Tinker")
+
+​Laravel possède un outil magique appelé Tinker qui permet d'interagir avec ta base de données en ligne de commande.
+
+Lance dans ton terminal :
+php artisan thinker
+
+Tape ces lignes une par une (remplace par tes infos) :
+
+$user = new App\Models\User();
+$user->name = "Ruth Admin";
+$user->email = "ruth@exemple.com";
+$user->password = Hash::make('votre_mot_de_passe');
+$user->role = 'admin'; 
+$user->occupant_status = 'proprietaire';
+$user->save();
+
+Enfin Lance : php artisan db:seed
+
 ## Credits
 
 Developpé par Josh Kaninda - Mars 2026
